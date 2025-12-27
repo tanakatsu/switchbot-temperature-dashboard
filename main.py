@@ -81,10 +81,10 @@ def main():
     amedas_client = AmedasDataClient(os.environ["AMEDAS_LOCATION_ID"])
 
     influxdb_writer = InfluxDBWriter(
-        url=os.environ["INFLUX_URL"],
-        token=os.environ["INFLUX_TOKEN"],
-        org=os.environ["INFLUX_ORG"],
-        bucket=os.environ["INFLUX_BUCKET"],
+        url=os.environ["INFLUXDB_URL"],
+        token=os.environ["INFLUXDB_TOKEN"],
+        org=os.environ["INFLUXDB_ORG"],
+        bucket=os.environ["INFLUXDB_BUCKET"],
     )
 
     schedule.every(10).minutes.do(

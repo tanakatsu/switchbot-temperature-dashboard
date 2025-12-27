@@ -78,7 +78,10 @@ def main():
     for device in devices:
         print(f"- {device.device_name} (ID: {device.device_id})")
 
-    amedas_client = AmedasDataClient(os.environ["AMEDAS_LOCATION_ID"])
+    amedas_location_id = os.environ.get("AMEDAS_LOCATION_ID")
+    if amedas_location_id is not None:
+        amedas_client = AmedasDataClient(amedas_location_id)
+        print(f"AMEDAS location ID: {amedas_location_id}")
 
     influxdb_writer = InfluxDBWriter(
         url=os.environ["INFLUXDB_URL"],
@@ -90,7 +93,8 @@ def main():
     schedule.every(10).minutes.do(
         task_switchbot, switchbot_client, devices, influxdb_writer
     )
-    schedule.every(10).minutes.do(task_amedas, amedas_client, influxdb_writer)
+    if amedas_location_id is not None:
+        schedule.every(10).minutes.do(task_amedas, amedas_client, influxdb_writer)
 
     while True:
         schedule.run_pending()

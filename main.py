@@ -31,13 +31,17 @@ def task_switchbot(
             writer.write(
                 measurement,
                 "sensor_id",
-                device.device_id,
+                device.device_name,
                 status.temperature,
                 status.humidity,
             )
 
 
-def task_amedas(amedas_client: AmedasDataClient, influxdb_writer: InfluxDBWriter):
+def task_amedas(
+    amedas_client: AmedasDataClient,
+    amedas_location_name: str,
+    influxdb_writer: InfluxDBWriter,
+):
     """
     30分前のAMEDASデータを取得してInfluxDBに書き込む
     """
@@ -62,7 +66,7 @@ def task_amedas(amedas_client: AmedasDataClient, influxdb_writer: InfluxDBWriter
         writer.write(
             measurement,
             "location_id",
-            amedas_client.location_id,
+            amedas_location_name,
             temp_c,
             humidity,
             target_time,  # UTC時間で書き込む
@@ -81,7 +85,9 @@ def main():
     amedas_location_id = os.environ.get("AMEDAS_LOCATION_ID")
     if amedas_location_id is not None:
         amedas_client = AmedasDataClient(amedas_location_id)
-        print(f"AMEDAS location ID: {amedas_location_id}")
+        df_observation_points = amedas_client.get_observation_points()
+        amedas_location_name = df_observation_points.loc[amedas_location_id, "kjName"]
+        print(f"AMEDAS location ID: {amedas_location_id} ({amedas_location_name})")
 
     influxdb_writer = InfluxDBWriter(
         url=os.environ["INFLUXDB_URL"],
@@ -94,7 +100,9 @@ def main():
         task_switchbot, switchbot_client, devices, influxdb_writer
     )
     if amedas_location_id is not None:
-        schedule.every(10).minutes.do(task_amedas, amedas_client, influxdb_writer)
+        schedule.every(10).minutes.do(
+            task_amedas, amedas_client, amedas_location_name, influxdb_writer
+        )
 
     while True:
         schedule.run_pending()

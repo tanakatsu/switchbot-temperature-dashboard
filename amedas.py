@@ -107,3 +107,17 @@ class AmedasDataClient:
                 one_data[k] = v
 
         return pd.DataFrame([one_data])
+
+    def get_observation_points(self) -> pd.DataFrame:
+        """観測地点一覧を取得する
+
+        Returns:
+            pd.DataFrame: 観測地点一覧
+        """
+        url = "https://www.jma.go.jp/bosai/amedas/const/amedastable.json"
+
+        response = requests.get(url)
+        data = response.json()
+
+        df_observation_points = pd.DataFrame(data).T
+        return df_observation_points

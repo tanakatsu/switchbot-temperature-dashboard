@@ -1,4 +1,4 @@
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 from influxdb_client import InfluxDBClient, Point, WriteOptions
 

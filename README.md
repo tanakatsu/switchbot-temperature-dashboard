@@ -71,7 +71,7 @@ Once the services are running, you can configure the data source and dashboard t
     1. Create a New Dashboard
         1. In Grafana, click Dashboards from the left-hand menu
         1. Click New → New dashboard
-        1. Click Add a new panel
+        1. Click Add visualization
     1. Configure the Panel Query
         1. In the Query section at the bottom of the screen:
            - Data source: Select the InfluxDB data source you added earlier
@@ -79,7 +79,7 @@ Once the services are running, you can configure the data source and dashboard t
         1. Example Flux query:
            ```flux
            from(bucket: "your-bucket-name")
-             |> range(start: -1d)
+             |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
              |> filter(fn: (r) => r._measurement == "sensor")
              |> filter(fn: (r) => r._field == "temp_c")
         1. Configure Visualization

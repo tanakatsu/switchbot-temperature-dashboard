@@ -49,7 +49,7 @@ Once the services are running, you can configure the data source and dashboard t
         http://localhost:3000
         ```
     1. Log in with the following credentials:
-        - Username: value of the `GF_SECURITY_ADMIN_USER` environment variable
+        - Username: `admin`
         - Password: value of the `GF_SECURITY_ADMIN_PASSWORD` environment variable
     1. Register InfluxDB as a Data Source
         1. Click Data sources from the left-hand menu
